@@ -1,124 +1,88 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Atlas Financial - Demo</title>
-<style>
-*{box-sizing:border-box}
-body{font-family:Arial;margin:0;background:#f1f5f9;color:#0f172a}
-.top{background:#0a1f44;color:white;padding:18px;text-align:center}
-.top h1{margin:0;font-size:22px;letter-spacing:1px}
-.badge{background:#facc15;color:black;font-size:11px;padding:5px 10px;border-radius:20px;display:inline-block;margin-top:8px;font-weight:bold}
-.card{background:white;margin:15px;padding:18px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.balance{font-size:32px;font-weight:bold;color:#0a1f44}
-.small{color:#64748b;font-size:13px}
-button{width:100%;padding:14px;border:0;border-radius:10px;background:#0a1f44;color:white;font-weight:bold;margin-top:10px}
-button.gold{background:#c9a227;color:black}
-input,select{width:100%;padding:12px;margin-top:10px;border:1px solid #cbd5e1;border-radius:10px}
-.row{display:flex;gap:10px}
-.row button{flex:1}
-.item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #e2e8f0}
-.hidden{display:none}
-</style>
-</head>
-<body>
-<div class="top">
-<h1>ATLAS FINANCIAL</h1>
-<span class="badge">DEMO APP - SIMULATION ONLY - NO REAL MONEY</span>
-</div>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wells Fargo - Atlas</title><style>
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:#f4f1ea;color:#222} .top{background:#D71E28;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.top b{font-size:20px;letter-spacing:.5px} .top span{background:#FFCC41;color:#000;font-size:11px;padding:4px 8px;border-radius:20px;font-weight:700}
+.wrap{max-width:480px;margin:0 auto;padding:16px} .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:14px}
+.small{color:#666;font-size:13px} .bal{font-size:38px;font-weight:800;margin:6px 0} .btn{width:100%;background:#D71E28;color:#fff;border:0;padding:14px;border-radius:30px;font-size:16px;font-weight:700;cursor:pointer}
+.btn2{background:#fff;color:#D71E28;border:2px solid #D71E28} input,select{width:100%;padding:13px;border:1.5px solid #ddd;border-radius:10px;margin:8px 0;font-size:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px} .action{background:#fff;border-radius:14px;padding:16px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.06);cursor:pointer}
+.action b{font-size:28px;display:block} .tx{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee}
+.center{text-align:center} .check{width:70px;height:70px;background:#1a9e4b;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:18px auto}
+.hidden{display:none} .demo{font-size:11px;color:#888;text-align:center;margin-top:14px}
+</style></head><body>
+<div class="top"><b>WELLS FARGO</b><span>ATLAS • DEMO</span></div>
+<div class="wrap">
 
-<div id="loginPage" class="card">
-<h2>Welcome Back</h2>
-<p class="small">Demo Login - Use any name</p>
-<input id="userName" placeholder="Your Name">
-<input type="password" placeholder="Password (demo)">
-<button onclick="login()">Sign In</button>
-</div>
+<!-- LOGIN -->
+<div id="login" class="card center">
+<h2 style="color:#D71E28;margin:6px 0">Welcome</h2><p class="small">Sign on to view your accounts</p>
+<input id="uName" placeholder="Your Name e.g. Noah Kennedy">
+<input type="password" placeholder="Password (any)">
+<button class="btn" onclick="login()">Sign On</button>
+<p class="demo">Demo app - not a real bank. No real money.</p></div>
 
-<div id="homePage" class="hidden">
-<div class="card">
-<p class="small">Hello, <span id="helloName">User</span></p>
-<p class="small">Checking Account •• 4521</p>
-<div class="balance" id="bal">$1,000,000.00</div>
-<p class="small">Available Balance</p>
-<div class="row">
-<button onclick="showPage('transferPage')">Send Money</button>
-<button class="gold" onclick="showPage('billsPage')">Pay Bill</button>
-</div>
-</div>
+<!-- DASHBOARD -->
+<div id="dash" class="hidden">
+<div class="card"><div class="small">Hello, <b id="hello"></b></div>
+<div class="small" style="margin-top:12px">Everyday Checking ••2201</div>
+<div class="small">Available balance</div><div class="bal" id="bal">$1,000,000.00</div>
+<div class="small">Routing •• 021000021</div></div>
 
-<div class="card">
-<h3>Recent Activity</h3>
-<div id="history">
-<div class="item"><span>Initial Demo Balance</span><b style="color:green">+$1,000,000.00</b></div>
-</div>
-</div>
-</div>
+<div class="grid">
+<div class="action" onclick="show('send')"><b>↗</b>Send Money<br><span class="small">with Zelle®</span></div>
+<div class="action" onclick="show('bill')"><b>🧾</b>Pay Bill</div>
+<div class="action" onclick="show('send')"><b>+</b>Request</div>
+<div class="action" onclick="show('dash')"><b>💳</b>My Card</div></div>
 
-<div id="transferPage" class="card hidden">
-<h3>Send Money</h3>
-<p class="small">SIMULATION ONLY - Money will be removed from your demo balance</p>
-<input id="toName" placeholder="Recipient Name">
-<input id="toAcct" placeholder="Account Number">
-<input id="toAmt" type="number" placeholder="Amount $">
-<button onclick="doTransfer()">Send (Simulation)</button>
-<button class="gold" onclick="showPage('homePage')">Back Home</button>
-<p id="msg"></p>
-</div>
+<div class="card" style="margin-top:14px"><b>Recent Activity</b><div id="txs"></div></div>
+<button class="btn btn2" onclick="logout()">Sign Off</button>
+<p class="demo">Demo - Transactions are simulated</p></div>
 
-<div id="billsPage" class="card hidden">
-<h3>Pay Bill</h3>
-<p class="small">SIMULATION ONLY</p>
-<select id="billType"><option>Electric</option><option>Water</option><option>Internet</option></select>
-<input id="billAmt" type="number" placeholder="Amount $">
-<button onclick="doBill()">Pay Bill (Simulation)</button>
-<button class="gold" onclick="showPage('homePage')">Back Home</button>
-<p id="billMsg"></p>
-</div>
+<!-- SEND -->
+<div id="send" class="hidden">
+<div class="card"><h3 style="margin:0">Send Money with Zelle®</h3><p class="small">Send to friends and family in minutes.</p>
+<input id="toName" placeholder="Recipient name e.g. John Gray">
+<input id="toAmt" type="number" placeholder="Amount e.g. 50">
+<button class="btn" onclick="review()">Continue</button>
+<button class="btn btn2" style="margin-top:10px" onclick="show('dash')">Cancel</button></div></div>
 
+<!-- REVIEW -->
+<div id="review" class="hidden">
+<div class="card center"><p class="small">You're sending</p><div class="bal" id="revAmt"></div>
+<p><b id="revName"></b></p><p class="small">From: Everyday Checking ••2201<br>Delivery: Within minutes</p>
+<button class="btn" onclick="doSend()">Send Money</button>
+<button class="btn btn2" style="margin-top:10px" onclick="show('send')">Edit</button></div></div>
+
+<!-- RECEIPT -->
+<div id="receipt" class="hidden">
+<div class="card center"><div class="check">✓</div><h2 style="margin:0">Money Sent!</h2>
+<p class="small">Your money is on its way.</p><div class="bal" id="recAmt"></div>
+<p><b id="recName"></b></p><p class="small" id="recDate"></p>
+<button class="btn" onclick="show('dash')">Done</button></div></div>
+
+<!-- BILL -->
+<div id="bill" class="hidden">
+<div class="card"><h3>Pay Bill</h3><input id="billName" placeholder="Biller e.g. Netflix"><input id="billAmt" type="number" placeholder="Amount">
+<button class="btn" onclick="payBill()">Pay Now</button>
+<button class="btn btn2" style="margin-top:10px" onclick="show('dash')">Back</button></div></div>
+
+</div>
 <script>
-let balance = 1000000;
-function formatMoney(n){
-  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-}
-function login(){
-  let n = document.getElementById('userName').value || 'User';
-  document.getElementById('helloName').innerText = n;
-  document.getElementById('loginPage').classList.add('hidden');
-  document.getElementById('homePage').classList.remove('hidden');
-}
-function showPage(id){
-  document.getElementById('homePage').classList.add('hidden');
-  document.getElementById('transferPage').classList.add('hidden');
-  document.getElementById('billsPage').classList.add('hidden');
-  document.getElementById(id).classList.remove('hidden');
-}
-function doTransfer(){
-  let name = document.getElementById('toName').value;
-  let amt = Number(document.getElementById('toAmt').value);
-  if(!name || !amt){ alert('Fill all fields'); return; }
-  if(amt > balance){ alert('Not enough demo balance'); return; }
-  balance -= amt;
-  document.getElementById('bal').innerText = formatMoney(balance);
-  document.getElementById('msg').innerText = 'SIMULATION SUCCESS: ' + formatMoney(amt) + ' sent to ' + name + '. New balance: ' + formatMoney(balance);
-  let div = document.createElement('div');
-  div.className='item';
-  div.innerHTML='<span>Transfer to '+name+' - Demo</span><b>-$'+amt.toLocaleString()+'</b>';
-  document.getElementById('history').prepend(div);
-}
-function doBill(){
-  let type = document.getElementById('billType').value;
-  let amt = Number(document.getElementById('billAmt').value);
-  if(!amt){ alert('Enter amount'); return; }
-  if(amt > balance){ alert('Not enough demo balance'); return; }
-  balance -= amt;
-  document.getElementById('bal').innerText = formatMoney(balance);
-  document.getElementById('billMsg').innerText = 'SIMULATION: ' + type + ' bill of ' + formatMoney(amt) + ' paid. New balance: ' + formatMoney(balance);
-  let div = document.createElement('div');
-  div.className='item';
-  div.innerHTML='<span>'+type+' Bill - Demo</span><b>-$'+amt.toLocaleString()+'</b>';
-  document.getElementById('history').prepend(div);
-}
-</script>
-</body>
-  </html>
+let balance = parseFloat(localStorage.getItem('wf_bal')||'1000000');
+let txs = JSON.parse(localStorage.getItem('wf_txs')||'[{"n":"Opening Balance","a":1000000}]');
+let name = localStorage.getItem('wf_name')||'';
+function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function render(){document.getElementById('bal').textContent=fmt(balance);
+document.getElementById('hello').textContent=name||'Customer';
+document.getElementById('txs').innerHTML=txs.slice().reverse().map(t=>`<div class="tx"><span>${t.n}</span><b style="color:${t.a<0?'#D71E28':'#1a9e4b'}">${t.a<0?'−':'+'}${fmt(Math.abs(t.a))}</b></div>`).join('')||'No activity';}
+function show(id){['login','dash','send','review','receipt','bill'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
+function login(){name=document.getElementById('uName').value||'Noah Kennedy';localStorage.setItem('wf_name',name);render();show('dash');}
+function logout(){show('login')}
+function review(){let n=document.getElementById('toName').value;let a=parseFloat(document.getElementById('toAmt').value);if(!n||!a){alert('Enter name and amount');return;}document.getElementById('revName').textContent=n;document.getElementById('revAmt').textContent=fmt(a);show('review');}
+function doSend(){let n=document.getElementById('toName').value;let a=parseFloat(document.getElementById('toAmt').value);balance-=a;txs.push({n:'Zelle® to '+n,a:-a});localStorage.setItem('wf_bal',balance);localStorage.setItem('wf_txs',JSON.stringify(txs));document.getElementById('recName').textContent=n;document.getElementById('recAmt').textContent=fmt(a);document.getElementById('recDate').textContent=new Date().toLocaleString();render();show('receipt');}
+function payBill(){let n=document.getElementById('billName').value||'Bill';let a=parseFloat(document.getElementById('billAmt').value||0);balance-=a;txs.push({n:'Bill - '+n,a:-a});localStorage.setItem('wf_bal',balance);localStorage.setItem('wf_txs',JSON.stringify(txs));render();show('dash');alert('Bill paid!');}
+if(name){document.getElementById('uName').value=name}
+render();
+</script></body></html>
