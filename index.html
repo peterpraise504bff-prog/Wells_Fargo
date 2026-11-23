@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas Financial - Demo</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial;margin:0;background:#f1f5f9;color:#0f172a}
+.top{background:#0a1f44;color:white;padding:18px;text-align:center}
+.top h1{margin:0;font-size:22px;letter-spacing:1px}
+.badge{background:#facc15;color:black;font-size:11px;padding:5px 10px;border-radius:20px;display:inline-block;margin-top:8px;font-weight:bold}
+.card{background:white;margin:15px;padding:18px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.balance{font-size:32px;font-weight:bold;color:#0a1f44}
+.small{color:#64748b;font-size:13px}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:#0a1f44;color:white;font-weight:bold;margin-top:10px}
+button.gold{background:#c9a227;color:black}
+input,select{width:100%;padding:12px;margin-top:10px;border:1px solid #cbd5e1;border-radius:10px}
+.row{display:flex;gap:10px}
+.row button{flex:1}
+.item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #e2e8f0}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="top">
+<h1>ATLAS FINANCIAL</h1>
+<span class="badge">DEMO APP - SIMULATION ONLY - NO REAL MONEY</span>
+</div>
+
+<div id="loginPage" class="card">
+<h2>Welcome Back</h2>
+<p class="small">Demo Login - Use any name</p>
+<input id="userName" placeholder="Your Name">
+<input type="password" placeholder="Password (demo)">
+<button onclick="login()">Sign In</button>
+</div>
+
+<div id="homePage" class="hidden">
+<div class="card">
+<p class="small">Hello, <span id="helloName">User</span></p>
+<p class="small">Checking Account •• 4521</p>
+<div class="balance" id="bal">$1,000,000.00</div>
+<p class="small">Available Balance</p>
+<div class="row">
+<button onclick="showPage('transferPage')">Send Money</button>
+<button class="gold" onclick="showPage('billsPage')">Pay Bill</button>
+</div>
+</div>
+
+<div class="card">
+<h3>Recent Activity</h3>
+<div id="history">
+<div class="item"><span>Initial Demo Balance</span><b style="color:green">+$1,000,000.00</b></div>
+</div>
+</div>
+</div>
+
+<div id="transferPage" class="card hidden">
+<h3>Send Money</h3>
+<p class="small">SIMULATION ONLY - Money will be removed from your demo balance</p>
+<input id="toName" placeholder="Recipient Name">
+<input id="toAcct" placeholder="Account Number">
+<input id="toAmt" type="number" placeholder="Amount $">
+<button onclick="doTransfer()">Send (Simulation)</button>
+<button class="gold" onclick="showPage('homePage')">Back Home</button>
+<p id="msg"></p>
+</div>
+
+<div id="billsPage" class="card hidden">
+<h3>Pay Bill</h3>
+<p class="small">SIMULATION ONLY</p>
+<select id="billType"><option>Electric</option><option>Water</option><option>Internet</option></select>
+<input id="billAmt" type="number" placeholder="Amount $">
+<button onclick="doBill()">Pay Bill (Simulation)</button>
+<button class="gold" onclick="showPage('homePage')">Back Home</button>
+<p id="billMsg"></p>
+</div>
+
+<script>
+let balance = 1000000;
+function formatMoney(n){
+  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function login(){
+  let n = document.getElementById('userName').value || 'User';
+  document.getElementById('helloName').innerText = n;
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('homePage').classList.remove('hidden');
+}
+function showPage(id){
+  document.getElementById('homePage').classList.add('hidden');
+  document.getElementById('transferPage').classList.add('hidden');
+  document.getElementById('billsPage').classList.add('hidden');
+  document.getElementById(id).classList.remove('hidden');
+}
+function doTransfer(){
+  let name = document.getElementById('toName').value;
+  let amt = Number(document.getElementById('toAmt').value);
+  if(!name || !amt){ alert('Fill all fields'); return; }
+  if(amt > balance){ alert('Not enough demo balance'); return; }
+  balance -= amt;
+  document.getElementById('bal').innerText = formatMoney(balance);
+  document.getElementById('msg').innerText = 'SIMULATION SUCCESS: ' + formatMoney(amt) + ' sent to ' + name + '. New balance: ' + formatMoney(balance);
+  let div = document.createElement('div');
+  div.className='item';
+  div.innerHTML='<span>Transfer to '+name+' - Demo</span><b>-$'+amt.toLocaleString()+'</b>';
+  document.getElementById('history').prepend(div);
+}
+function doBill(){
+  let type = document.getElementById('billType').value;
+  let amt = Number(document.getElementById('billAmt').value);
+  if(!amt){ alert('Enter amount'); return; }
+  if(amt > balance){ alert('Not enough demo balance'); return; }
+  balance -= amt;
+  document.getElementById('bal').innerText = formatMoney(balance);
+  document.getElementById('billMsg').innerText = 'SIMULATION: ' + type + ' bill of ' + formatMoney(amt) + ' paid. New balance: ' + formatMoney(balance);
+  let div = document.createElement('div');
+  div.className='item';
+  div.innerHTML='<span>'+type+' Bill - Demo</span><b>-$'+amt.toLocaleString()+'</b>';
+  document.getElementById('history').prepend(div);
+}
+</script>
+</body>
+  </html>
