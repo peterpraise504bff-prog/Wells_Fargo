@@ -18,6 +18,14 @@ input,select{width:100%;padding:14px;border:1.5px solid #D0D7E0;border-radius:10
 .row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #EEF1F5;font-size:14px;text-align:left} .row span:first-child{color:#5a6a7a} .row span:last-child{font-weight:700;text-align:right}
 .badge{display:inline-block;background:#E6F7EE;color:#00A651;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800}
 .tap{font-size:11px;color:#2557D6;font-weight:700}
+/* PROCESSING - GREEN CIRCLE SPINNING GRADUALLY */
+.spinWrap{position:relative;width:90px;height:90px;margin:20px auto}
+.spinCircle{width:90px;height:90px;border-radius:50%;border:5px solid #E6F7EE;border-top:5px solid #00A651;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.spinCheck{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:#00A651;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
+.progressBar{width:100%;height:8px;background:#EEF1F5;border-radius:20px;overflow:hidden;margin:14px 0}
+.progressFill{height:100%;width:0%;background:#00A651;border-radius:20px;transition:width 0.3s}
+.syncTag{font-size:11px;background:#E6F7EE;color:#00A651;padding:4px 10px;border-radius:20px;font-weight:700}
 </style></head><body>
 <div id="loginPage">
 <div class="top"><div class="logo"><span><i></i>citi</span></div><span style="font-size:11px;background:#EAF0FF;color:#2557D6;padding:5px 9px;border-radius:20px;font-weight:800">DEMO</span></div>
@@ -32,7 +40,7 @@ input,select{width:100%;padding:14px;border:1.5px solid #D0D7E0;border-radius:10
 <div id="app" class="hidden">
 <div class="top"><div class="logo"><span><i></i>citi</span></div><div class="icons">🔔 👤</div></div>
 <div class="wrap">
-<h2 style="margin:18px 0 0;color:#0B1F4B">Good morning,<br>Noah Kennedy</h2><p class="small">Let's get your day started.</p>
+<h2 style="margin:18px 0 0;color:#0B1F4B">Good morning,<br>Noah Kennedy</h2><p class="small">Let's get your day started. <span class="syncTag" id="syncTag">● SYNCED ACROSS DEVICES</span></p>
 <div class="blue"><span class="pill">● Total available</span><div class="bal" id="bal" style="margin-top:10px">$1,000,000.00</div><p style="font-size:13px;opacity:.9;margin:6px 0 0">Across 3 accounts • Updated just now</p></div>
 <div class="grid4" style="margin:16px 0">
 <div onclick="show('send')"><div class="circle">↗</div><span style="font-size:11px">Pay &<br>Transfer</span></div>
@@ -51,13 +59,15 @@ input,select{width:100%;padding:14px;border:1.5px solid #D0D7E0;border-radius:10
 
 <div id="send" class="hidden"><div class="wrap"><div class="card"><h3 style="margin:0;color:#0B1F4B">Pay & Transfer</h3><p class="small">From: Noah Kennedy • Checking ••2201</p>
 <label>Recipient Name</label><input id="toName" placeholder="e.g. Jude Fredson">
-<label>Recipient Bank - Choose Bank</label><select id="toBank"><option value="">Select Bank...</option><option>Citibank</option><option>Chase Bank</option><option>Bank of America</option><option>Wells Fargo</option><option>Capital One</option><option>US Bank</option><option>TD Bank</option><option>HSBC</option><option>Access Bank</option><option>GTBank (Guaranty Trust Bank)</option><option>First Bank of Nigeria</option><option>UBA - United Bank for Africa</option><option>Zenith Bank</option><option>Opay</option><option>Moniepoint</option><option>Palmpay</option><option>Other Bank</option></select>
+<label>Recipient Bank - American Banks Only</label><select id="toBank"><option value="">Select Bank...</option><option>Citibank</option><option>Chase Bank</option><option>Bank of America</option><option>Wells Fargo</option><option>Capital One</option><option>U.S. Bank</option><option>TD Bank</option><option>PNC Bank</option><option>HSBC Bank USA</option><option>Goldman Sachs Bank</option><option>American Express</option><option>Discover Bank</option><option>Ally Bank</option><option>U.S. Bank National Association</option><option>Citizens Bank</option></select>
 <label>Account Number</label><input id="toAcct" type="number" placeholder="e.g. 1234567890">
 <label>Amount</label><input id="toAmt" type="number" placeholder="0.00">
 <label>Note (Optional)</label><input id="toNote" placeholder="e.g. For school fees">
 <button class="btn" onclick="review()">Continue</button><button class="btn btn2" style="margin-top:10px" onclick="show('dash')">Cancel</button></div></div></div>
 
-<div id="review" class="hidden"><div class="wrap"><div class="card center"><p class="small">You're sending</p><div class="bal" id="revAmt"></div><p><b id="revName"></b></p><p class="small" id="revBank"></p><p class="small" id="revDate"></p><p class="small">From: Noah Kennedy • Citi Checking ••2201</p><button class="btn" onclick="doSend()">Send Money</button><button class="btn btn2" style="margin-top:10px" onclick="show('send')">Edit</button></div></div></div>
+<div id="review" class="hidden"><div class="wrap"><div class="card center"><p class="small">You're sending</p><div class="bal" id="revAmt"></div><p><b id="revName"></b></p><p class="small" id="revBank"></p><p class="small" id="revDate"></p><p class="small">From: Noah Kennedy • Citi Checking ••2201</p><button class="btn" onclick="startProcessing()">Send Money</button><button class="btn btn2" style="margin-top:10px" onclick="show('send')">Edit</button></div></div></div>
+
+<div id="processing" class="hidden"><div class="wrap"><div class="card center"><div class="spinWrap"><div class="spinCircle"></div><div class="spinCheck">✓</div></div><h2 style="color:#0B1F4B;margin:8px 0">Processing Transfer...</h2><p class="small" id="procText">Contacting bank... Please wait</p><div class="progressBar"><div class="progressFill" id="procBar"></div></div><p class="small"><b id="procPct">0%</b> • Do not close this page</p><p class="small" id="procDetail">Sending to <b id="procName"></b></p></div></div></div>
 
 <div id="receipt" class="hidden"><div class="wrap"><div class="card center"><div class="check">✓</div><h2 style="margin:0;color:#0B1F4B">Money Sent!</h2><div class="bal" id="recAmt"></div><p><b id="recName"></b></p><span class="badge">● COMPLETED</span><p class="small" id="recDate"></p><button class="btn" onclick="showDetailFromReceipt()">View Full Receipt</button><button class="btn btn2" style="margin-top:10px" onclick="show('dash')">Done</button></div></div></div>
 
@@ -81,11 +91,18 @@ input,select{width:100%;padding:14px;border:1.5px solid #D0D7E0;border-radius:10
 <div class="active" onclick="show('dash')"><b>🏠</b>Home</div><div onclick="show('dash')"><b>📊</b>Activity</div><div onclick="show('send')"><b>↗</b>Send</div><div onclick="alert('My Card - Demo')"><b>💳</b>Card</div><div onclick="logout()"><b>⋯</b>More</div></div>
 
 <script>
+// ===== CLOUD SYNC SETTINGS - FOR HISTORY ON ANY PHONE =====
+// To make history show on ANY phone, you need Firebase (FREE):
+// 1. Go to console.firebase.google.com -> Create Project -> Realtime Database -> Create Database (Start in test mode)
+// 2. Copy your firebaseConfig and paste it below, replacing the example.
+// If you leave it as "PASTE_YOUR_FIREBASE_CONFIG_HERE", app will use LOCAL storage (only this phone) but still work.
+const FIREBASE_CONFIG = "PASTE_YOUR_FIREBASE_CONFIG_HERE";
+// Example format: {apiKey:"...", authDomain:"...", databaseURL:"https://your-project-default-rtdb.firebaseio.com", projectId:"...", storageBucket:"...", messagingSenderId:"...", appId:"..."}
+
 const OWNER_EMAIL = "noah.kennedyy185123@gmail.com";
 const OWNER_PASS = "Noah2026";
 let balance = parseFloat(localStorage.getItem('citi_bal')||'1000000');
 let txs = JSON.parse(localStorage.getItem('citi_txs')||'[{"n":"Opening Balance","a":1000000,"bank":"Citi","acct":"••2201","date":"November 23, 2026","time":"4:20 PM","id":"CITI-000001","note":"Opening Balance","type":"Opening Balance"}]');
-// --- FIX OLD TRANSACTIONS: If old transfer has no date/time, fill it in ---
 let fixed = false;
 txs.forEach(t=>{
   if(!t.date || t.date==='-' || t.date==='Opening'){ t.date='November 23, 2026'; fixed=true; }
@@ -97,17 +114,64 @@ txs.forEach(t=>{
 });
 if(fixed){ localStorage.setItem('citi_txs', JSON.stringify(txs)); }
 let lastTx = null;
+let pendingTx = null;
 function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function mask(acct){if(!acct) return '••2201'; let s=String(acct); return '••'+s.slice(-4);}
+function saveData(){
+  localStorage.setItem('citi_bal', balance);
+  localStorage.setItem('citi_txs', JSON.stringify(txs));
+  // Try to save to Cloud (Firebase) if configured - so other phones see same history
+  if(window.firebaseDB){ try{ window.firebaseDB.ref('noah_kennedy').set({balance: balance, txs: txs}); }catch(e){} }
+}
+function loadFromCloud(){
+  if(window.firebaseDB){
+    window.firebaseDB.ref('noah_kennedy').once('value').then(snap=>{
+      let d = snap.val();
+      if(d && d.txs && d.txs.length > txs.length){ txs = d.txs; balance = d.balance; saveData(); render(); }
+    }).catch(()=>{});
+  }
+}
 function render(){document.getElementById('bal').textContent=fmt(balance);document.getElementById('bal2').textContent=fmt(balance);
 document.getElementById('txs').innerHTML=txs.slice().reverse().map((t,i)=>{let idx=txs.length-1-i; return `<div class="tx" onclick="openDetail(${idx})"><div><b>${t.n}</b><div class="small">${t.bank||'Citi'} • ${mask(t.acct)} • ${t.date||''} ${t.time||''} <span class="tap">• View Receipt ›</span></div></div><b style="color:${t.a<0?'#D92D20':'#00A651'}">${t.a<0?'−':'+'}${fmt(Math.abs(t.a))}</b></div>`}).join('')||'No activity';}
-function show(id){['loginPage','app','send','review','receipt','bill','detail'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById('navBar').classList.add('hidden');if(id==='dash'){document.getElementById('app').classList.remove('hidden');document.getElementById('navBar').classList.remove('hidden');}else{document.getElementById(id).classList.remove('hidden');if(id!=='loginPage')document.getElementById('navBar').classList.remove('hidden');}}
+function show(id){['loginPage','app','send','review','receipt','bill','detail','processing'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById('navBar').classList.add('hidden');if(id==='dash'){document.getElementById('app').classList.remove('hidden');document.getElementById('navBar').classList.remove('hidden');}else{document.getElementById(id).classList.remove('hidden');if(id!=='loginPage')document.getElementById('navBar').classList.remove('hidden');}}
 function showDetailFromReceipt(){ if(lastTx) openDetail(txs.indexOf(lastTx)); }
-function login(){let e=document.getElementById('uEmail').value.trim().toLowerCase();let p=document.getElementById('uPass').value;if(e===OWNER_EMAIL.toLowerCase()&&p===OWNER_PASS){document.getElementById('err').style.display='none';render();show('dash');}else{document.getElementById('err').style.display='block';document.getElementById('uPass').value='';}}
+function login(){let e=document.getElementById('uEmail').value.trim().toLowerCase();let p=document.getElementById('uPass').value;if(e===OWNER_EMAIL.toLowerCase()&&p===OWNER_PASS){document.getElementById('err').style.display='none';loadFromCloud();render();show('dash');}else{document.getElementById('err').style.display='block';document.getElementById('uPass').value='';}}
 function logout(){show('loginPage');document.getElementById('navBar').classList.add('hidden');}
-function review(){let n=document.getElementById('toName').value;let b=document.getElementById('toBank').value;let ac=document.getElementById('toAcct').value;let a=parseFloat(document.getElementById('toAmt').value);if(!n||!b||!ac||!a){alert('Please fill: Name, Bank, Account Number and Amount');return;}document.getElementById('revName').textContent=n;document.getElementById('revAmt').textContent=fmt(a);document.getElementById('revBank').textContent=b+' • '+mask(ac);let now=new Date();document.getElementById('revDate').textContent=now.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+' • '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});show('review');}
-function doSend(){let n=document.getElementById('toName').value;let b=document.getElementById('toBank').value;let ac=document.getElementById('toAcct').value;let note=document.getElementById('toNote').value||'Transfer';let a=parseFloat(document.getElementById('toAmt').value);let now=new Date();let tx={n:'Transfer to '+n,a:-a,bank:b,acct:ac,date:now.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),time:now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),id:'CITI-'+Math.floor(100000+Math.random()*900000),note:note,type:'Transfer'};balance-=a;txs.push(tx);lastTx=tx;localStorage.setItem('citi_bal',balance);localStorage.setItem('citi_txs',JSON.stringify(txs));document.getElementById('recName').textContent=n+' • '+b+' '+mask(ac);document.getElementById('recAmt').textContent=fmt(a);document.getElementById('recDate').textContent=tx.date+' • '+tx.time;render();show('receipt');}
+function review(){let n=document.getElementById('toName').value;let b=document.getElementById('toBank').value;let ac=document.getElementById('toAcct').value;let a=parseFloat(document.getElementById('toAmt').value);if(!n||!b||!ac||!a){alert('Please fill: Name, Bank, Account Number and Amount');return;}document.getElementById('revName').textContent=n;document.getElementById('revAmt').textContent=fmt(a);document.getElementById('revBank').textContent=b+' • '+mask(ac);let now=new Date();document.getElementById('revDate').textContent=now.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+' • '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});pendingTx={name:n,bank:b,acct:ac,amt:a,note:document.getElementById('toNote').value||'Transfer'};show('review');}
+function startProcessing(){
+  if(!pendingTx) return;
+  document.getElementById('procName').textContent = pendingTx.name + ' • ' + pendingTx.bank;
+  document.getElementById('procBar').style.width='0%';
+  document.getElementById('procPct').textContent='0%';
+  document.getElementById('procText').textContent='Contacting bank... Please wait';
+  show('processing');
+  let pct=0;
+  let steps=['Contacting bank...','Verifying account...','Checking funds...','Sending money...','Confirming transfer...'];
+  let interval=setInterval(()=>{
+    pct+=Math.floor(Math.random()*18)+8;
+    if(pct>=100){pct=100; clearInterval(interval); setTimeout(()=>{ doSend(); }, 500);}
+    document.getElementById('procBar').style.width=pct+'%';
+    document.getElementById('procPct').textContent=pct+'%';
+    let sIdx=Math.min(Math.floor(pct/20),4);
+    document.getElementById('procText').textContent=steps[sIdx];
+  }, 700);
+}
+function doSend(){let n=pendingTx.name;let b=pendingTx.bank;let ac=pendingTx.acct;let note=pendingTx.note;let a=pendingTx.amt;let now=new Date();let tx={n:'Transfer to '+n,a:-a,bank:b,acct:ac,date:now.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),time:now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),id:'CITI-'+Math.floor(100000+Math.random()*900000),note:note,type:'Transfer'};balance-=a;txs.push(tx);lastTx=tx;saveData();document.getElementById('recName').textContent=n+' • '+b+' '+mask(ac);document.getElementById('recAmt').textContent=fmt(a);document.getElementById('recDate').textContent=tx.date+' • '+tx.time;render();show('receipt');}
 function openDetail(idx){let t=txs[idx];lastTx=t;document.getElementById('dAmt').textContent=fmt(Math.abs(t.a));document.getElementById('dName').textContent=t.n.replace('Transfer to ','').replace('Bill - ','');document.getElementById('dBank').textContent=t.bank||'Citi';document.getElementById('dAcct').textContent=mask(t.acct);document.getElementById('dType').textContent=t.type||'Transfer';document.getElementById('dDate').textContent=t.date||'November 23, 2026';document.getElementById('dTime').textContent=t.time||'4:20 PM';document.getElementById('dId').textContent=t.id||'CITI-000001';document.getElementById('dNote').textContent=t.note||'Transfer';document.getElementById('dStatus').textContent='● COMPLETED';show('detail');}
-function payBill(){let n=document.getElementById('billName').value||'Bill';let a=parseFloat(document.getElementById('billAmt').value||0);let now=new Date();let tx={n:'Bill - '+n,a:-a,bank:'Citi',acct:'••2201',date:now.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),time:now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),id:'CITI-'+Math.floor(100000+Math.random()*900000),note:'Bill Payment',type:'Bill Payment'};balance-=a;txs.push(tx);lastTx=tx;localStorage.setItem('citi_bal',balance);localStorage.setItem('citi_txs',JSON.stringify(txs));render();show('dash');alert('Bill paid! Tap it in Recent Activity to see receipt.');}
+function payBill(){let n=document.getElementById('billName').value||'Bill';let a=parseFloat(document.getElementById('billAmt').value||0);let now=new Date();let tx={n:'Bill - '+n,a:-a,bank:'Citi',acct:'••2201',date:now.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),time:now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),id:'CITI-'+Math.floor(100000+Math.random()*900000),note:'Bill Payment',type:'Bill Payment'};balance-=a;txs.push(tx);lastTx=tx;saveData();render();show('dash');alert('Bill paid! Tap it in Recent Activity to see receipt.');}
 render();
-</script></body></html>
+</script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script>
+try{
+  if(typeof FIREBASE_CONFIG !== 'string' && FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey){
+    firebase.initializeApp(FIREBASE_CONFIG);
+    window.firebaseDB = firebase.database();
+    document.getElementById('syncTag').textContent='● CLOUD SYNC ON - History on all phones';
+  } else {
+    document.getElementById('syncTag').textContent='● LOCAL MODE - Set up Firebase for all phones';
+  }
+}catch(e){}
+</script>
+</body></html>
